@@ -11,11 +11,12 @@ import requests
 from requests.auth import HTTPDigestAuth
 import json
 import time
-#import quandl
 from chartit import DataPool, Chart
 from models import MonthlyWeather
 from models import LiveDataValue
+from googlefinance import getQuotes
 
+maxStocksPerStrategy = 5
 
 def index(request):
     
@@ -645,66 +646,29 @@ def displayCurrVal(request):
     print currVal0
     return render(request, "stockProfit/charts.html",{'priceList': currVal0})
 
+def getCurStockPrice(symbol):
+    try:
+        data = getQuotes(symbol)
+        stock_price = float(data[0]['LastTradeWithCurrency'])
+        return stock_price
+    except:
+        return 0.0
 
 def livePortFolio(request):
-
     stockList = request.POST.get('stockList')
     shareBought = request.POST.get('shareBought')
 
-    var1 = stockList.split(',')
-    var2 = shareBought.split(',')
+    stocks = stockList.split(',')
+    numShares = shareBought.split(',')
 
-    # Calculate upto the second portfolio value
-    print "In the live code"
-    print var1
-    print var2
-    print "Lenght 1: ", len(var1)
-    print "Lenght 2: ", len(var2)
+    curPortfolioVal = list()
+    portfolioVal = 0;
+    for idx in range(maxStocksPerStrategy):
+        curStockPrice = getCurStockPrice(stocks[idx])
+        portfolioVal = portfolioVal + (float(numShares[idx]) * curStockPrice)
+    curPortfolioVal.append(portfolioVal)
 
-    currVal0 = list()
-    currVal1 = list()
-    currVal2 = list()
-    currVal3 = list()
-    currVal4 = list()
-
-    max_range = 5
-    for i in range(len(var1)):
-        ticker = var1[i]
-        stock = LiveDataValue.objects(symbol=ticker).order_by('-date')
-        print "Ticker: " +ticker
-        print "Returned length; ", len(stock)
-
-        for j in range(max_range):
-            p = stock[j].price
-            print "Appending the value of stock " +var1[i]+ " at value: ", p
-            if i == 0:
-                currVal0.append(p)
-            elif i == 1:
-                currVal1.append(p)
-            elif i == 2:
-                currVal2.append(p)
-            elif i == 3:
-                currVal3.append(p)
-            elif i == 4:
-                currVal4.append(p)
-
-    currValPF = list()
-    for j in range(max_range):
-        valPF = 0
-        for snum in range(len(var2)):
-            if snum == 0:
-                valPF = valPF + (float(var2[snum]) * currVal0[max_range-1-j])
-            elif snum == 1:
-                valPF = valPF + (float(var2[snum]) * currVal1[max_range-1-j])
-            elif snum == 2:
-                valPF = valPF + (float(var2[snum]) * currVal2[max_range-1-j])
-            elif snum == 3:
-                valPF = valPF + (float(var2[snum]) * currVal3[max_range-1-j])
-            elif snum == 4:
-                valPF = valPF + (float(var2[snum]) * currVal4[max_range-1-j])
-        currValPF.append(valPF)
-
-    return render(request, "stockProfit/livePortFolio.html",{'currValPF':currValPF})
+    return render(request, "stockProfit/livePortFolio.html",{'currValPF':curPortfolioVal})
 
 
 
