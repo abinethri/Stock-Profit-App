@@ -20,7 +20,7 @@ maxStocksPerStrategy = 5
 
 def index(request):
     
-    return render(request, 'stockProfit/home.html')
+    return render(request, 'stockProfit/index.html')
 
 def self(request):
     
