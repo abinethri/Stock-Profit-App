@@ -5,10 +5,12 @@
  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
  </head>
  <body>
-
+<div id="container_pie_chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<br><br><br>
 <div id="container1" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 <br><br><br>
 <b><hr></b>
+<br><br><br>
 <div id="container2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 <div>
   <form method="post" action="http://127.0.0.1:8000/stocks/livePortFolio">
@@ -31,6 +33,7 @@
   var dateList = {{dateList|safe }};
   var shareBought= {{shareBought|safe }};
   var stockList = {{stockList|safe }};
+  var perctDist = {{perctDist|safe }};
 
  document.getElementById("slid").value = stockList;
  document.getElementById("sbid").value = shareBought;
@@ -74,11 +77,11 @@
 
     Highcharts.chart('container1', {
         title: {
-            text: 'Historical Data',
+            text: 'Historical Data for invidual stocks ',
             x: -20 //center
         },
         subtitle: {
-            text: 'Source: Taken from Quandl Api',
+            text: 'Source: Yahoo ! Api',
             x: -20
         },
         xAxis: {
@@ -123,11 +126,11 @@
 
         Highcharts.chart('container2', {
         title: {
-            text: 'Ethical Portfolio',
+            text: 'Historical Data for Ethical Portfolio',
             x: -20 //center
         },
         subtitle: {
-            text: 'Source: Quandl Api',
+            text: 'Source: Yahoo ! Api',
             x: -20
         },
         xAxis: {
@@ -160,8 +163,61 @@
     });
 });
  
+    
+    +Highcharts.chart('container_pie_chart', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Percentage distribution of investment in the portfolio'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                style: {
+                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                }
+            }
+        }
+    },
+    series: [{
+        name: 'Brands',
+        colorByPoint: true,
+        data: [{
+            name: 'GOOG',
+            y: perctDist[0]
+        }, {
+            name: 'AAPL',
+            y: perctDist[1],
+        }, {
+            name: 'JCI',
+            y: perctDist[2]
+        }, {
+            name: 'ADBE',
+            y: perctDist[3]
+        }, {
+            name: 'NVDA',
+            y: perctDist[4]
+        }]
+    }]
+});
   </script>
 
+
+});
+
+
  </body>
+
  </html>
 

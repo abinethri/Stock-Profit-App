@@ -252,7 +252,8 @@ def ethicalStrategy(request):
         'portFolioList': portFolioList,
         'shareBought':shareBought,
         'stockList':stockList,
-        'dateList': dateList})
+        'dateList': dateList,
+        'perctDist': perctDist})
 
 
 def growthStrategy(request):
@@ -347,7 +348,8 @@ def growthStrategy(request):
         'portFolioList': portFolioList,
         'shareBought':shareBought,
         'stockList':stockList,
-        'dateList': dateList})
+        'dateList': dateList,
+        'perctDist': perctDist})
 
 def indexStrategy(request):
     perctDist= [0.30, 0.30, 0.20, 0.10 , 0.10]
@@ -440,7 +442,8 @@ def indexStrategy(request):
         'portFolioList': portFolioList,
         'shareBought':shareBought,
         'stockList':stockList,
-        'dateList': dateList})
+        'dateList': dateList,
+        'perctDist': perctDist})
 
 def valueStrategy(request):
     perctDist= [0.20, 0.20, 0.20, 0.20 , 0.20]
@@ -533,7 +536,8 @@ def valueStrategy(request):
         'portFolioList': portFolioList,
         'shareBought':shareBought,
         'stockList':stockList,
-        'dateList': dateList})
+        'dateList': dateList,
+        'perctDist': perctDist})
 
 def qualityStrategy(request):
     perctDist= [0.30, 0.30, 0.20, 0.10 , 0.10]
@@ -626,7 +630,8 @@ def qualityStrategy(request):
         'portFolioList': portFolioList,
         'shareBought':shareBought,
         'stockList':stockList,
-        'dateList': dateList})
+        'dateList': dateList,
+        'perctDist': perctDist})
 
 
 def displayCurrVal(request):
