@@ -106,7 +106,7 @@ def historyData (request):
     for j in range(len(symList)):
         company = symList[j]
         for i in range(5):
-
+    
             url = "https://www.quandl.com/api/v3/datasets/WIKI/"+company+".json?api_key=Qj3hVb4abNZYbdEFxp27";
             myResponse=requests.get(url, verify= False)
             if(myResponse.ok):

@@ -22,7 +22,7 @@ SECRET_KEY = 'qedp6$7e1918&0d@z^*$srbw@+^vmc*t=%4%5$7_4@hb^hfw8m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['abinethri.pythonanywhere.com']
+ALLOWED_HOSTS = ['abinethri.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition
