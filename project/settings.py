@@ -22,7 +22,7 @@ SECRET_KEY = 'qedp6$7e1918&0d@z^*$srbw@+^vmc*t=%4%5$7_4@hb^hfw8m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['abinethri.pythonanywhere.com']
 
 
 # Application definition
@@ -80,8 +80,8 @@ DATABASES = {
     }
 }
 
-from mongoengine import connect
-connect('cmpe285_StockEngine', username='', password='')
+#from mongoengine import connect
+#connect('cmpe285_StockEngine', username='', password='')
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
