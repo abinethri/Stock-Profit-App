@@ -1,10 +1,8 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.shortcuts import render
-from models import Employees
-from models import StockValues
+from .models import StockValues
 from django.template import RequestContext
-from models import Post
 import datetime
 from datetime import datetime
 import requests
@@ -12,8 +10,6 @@ from requests.auth import HTTPDigestAuth
 import json
 import time
 from chartit import DataPool, Chart
-from models import MonthlyWeather
-from models import LiveDataValue
 from googlefinance import getQuotes
 
 maxStocksPerStrategy = 5
@@ -110,7 +106,6 @@ def historyData (request):
     for j in range(len(symList)):
         company = symList[j]
         for i in range(5):
-            stockValues = StockValues(company)
 
             url = "https://www.quandl.com/api/v3/datasets/WIKI/"+company+".json?api_key=Qj3hVb4abNZYbdEFxp27";
             myResponse=requests.get(url, verify= False)
@@ -120,6 +115,7 @@ def historyData (request):
                 dateObj = datetime.strptime(date, '%Y-%m-%d').date()
                 stock_price = jData["dataset"]["data"][i][1]
 
+                stockValues = StockValues()
                 stockValues.date = dateObj;
                 stockValues.name=jData["dataset"]["name"]
                 stockValues.price = stock_price
@@ -129,7 +125,7 @@ def historyData (request):
     return render(request, "stockProfit/historyData.html")
 
 def queryDB(request):
-    stock = StockValues.objects(ticker="GOOG").order_by('date')
+    stock = StockValues.objects.filter(ticker__exact="GOOG").order_by('date')
     priceList = list()
     dateList = list()
     print "Number of elemnets returned is: ", len(stock)
@@ -160,7 +156,7 @@ def ethicalStrategy(request):
 
     for i in range(len(stockList)):
         ticker = stockList[i]
-        stock = StockValues.objects(ticker=ticker).order_by('date')
+        stock = StockValues.objects.filter(ticker__exact=ticker).order_by('date')
         for j in range(len(stock)):
             p = stock[j].price
             d = stock[j].date.strftime('%m-%d-%Y')
@@ -205,27 +201,6 @@ def ethicalStrategy(request):
                         shareBought[2] * priceList2[day] + shareBought[3] * priceList3[day] + \
                         shareBought[4] * priceList4[day]
         leftOverMoney = amount - moneyInvested
-
-    # # Force assign money to without percentages
-    # temp = list()
-    # for snum in range(len(stockList)):
-    #     if snum == 0:
-    #         num = int((leftOverMoney) / priceList0[day])
-    #         temp.append(num)
-    #     elif snum == 1:
-    #         num = int((leftOverMoney) / priceList1[day])
-    #         temp.append(num)
-    #     elif snum == 2:
-    #         num = int((leftOverMoney) / priceList2[day])
-    #         temp.append(num)
-    #     elif snum == 3:
-    #         num = int((leftOverMoney) / priceList3[day])
-    #         temp.append(num)
-    #     elif snum == 4:
-    #         num = int((leftOverMoney) / priceList4[day])
-    #         temp.append(num)
-    # temp2 = [x + y for x, y in zip(shareBought, temp)]
-    # shareBought = temp2
 
     # PF = Portfolio
     for day in range(5):
@@ -276,7 +251,7 @@ def growthStrategy(request):
 
     for i in range(len(stockList)):
         ticker = stockList[i]
-        stock = StockValues.objects(ticker=ticker).order_by('date')
+        stock = StockValues.objects.filter(ticker__exact=ticker).order_by('date')
         for j in range(len(stock)):
             p = stock[j].price
             d = stock[j].date.strftime('%m-%d-%Y')
@@ -370,7 +345,7 @@ def indexStrategy(request):
 
     for i in range(len(stockList)):
         ticker = stockList[i]
-        stock = StockValues.objects(ticker=ticker).order_by('date')
+        stock = StockValues.objects.filter(ticker__exact=ticker).order_by('date')
         for j in range(len(stock)):
             p = stock[j].price
             d = stock[j].date.strftime('%m-%d-%Y')
@@ -464,7 +439,7 @@ def valueStrategy(request):
 
     for i in range(len(stockList)):
         ticker = stockList[i]
-        stock = StockValues.objects(ticker=ticker).order_by('date')
+        stock = StockValues.objects.filter(ticker__exact=ticker).order_by('date')
         for j in range(len(stock)):
             p = stock[j].price
             d = stock[j].date.strftime('%m-%d-%Y')
@@ -558,7 +533,7 @@ def qualityStrategy(request):
 
     for i in range(len(stockList)):
         ticker = stockList[i]
-        stock = StockValues.objects(ticker=ticker).order_by('date')
+        stock = StockValues.objects.filter(ticker__exact=ticker).order_by('date')
         for j in range(len(stock)):
             p = stock[j].price
             d = stock[j].date.strftime('%m-%d-%Y')
