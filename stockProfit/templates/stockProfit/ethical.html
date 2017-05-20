@@ -13,7 +13,7 @@
 <br><br><br>
 <div id="container2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 <div>
-  <form method="post" action="http://127.0.0.1:8000/stocks/livePortFolio">
+  <form method="post" action="livePortFolio">
     {% csrf_token %}
         <input type="hidden" name="stockList" id ="slid">
         <input type="hidden" name="shareBought" id="sbid"><br><br>
