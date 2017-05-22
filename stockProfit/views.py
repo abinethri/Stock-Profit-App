@@ -18,91 +18,13 @@ def index(request):
     
     return render(request, 'stockProfit/index.html')
 
-def self(request):
-    
-    return render(request, 'stockProfit/chart1.html')
-
-
-def update(request):
-    id = eval("request." + request.method + "['id']")
-    post = Post.objects(id=id)[0]
-    
-    if request.method == 'POST':
-        # update field values and save to mongo
-        post.title = request.POST['title']
-        post.last_update = datetime.datetime.now() 
-        post.content = request.POST['content']
-        post.save()
-        template = 'stockProfit/index.html'
-        params = {'Posts': Post.objects} 
-
-    elif request.method == 'GET':
-        template = 'stockProfit/update.html'
-        params = {'post':post}
-   
-    return render(request, template, params)
-                              
-
-def delete(request):
-    id = request.POST.get('id')
-    print "Print ID"
-    print id;
-
-    if request.method == 'POST':
-        post = Post.objects(id=id)[0]
-        post.delete() 
-        template = 'stockProfit/index.html'
-        params = {'Posts': Post.objects} 
-    elif request.method == 'GET':
-        template = 'stockProfit/delete.html'
-        params = { 'id': id } 
-
-    return render(request, template, params)
-
-    return render(request, "stockProfit/home.html")
-
-def home(request):
-    return render(request, "stockProfit/home.html")
-
-def chart(request):
-    company = ['GOOG', 'AAPL', 'YHOO']
-    
-    for i in range(len(company)):
-        stockValues = StockValues(company[i])
-
-        url = "https://www.quandl.com/api/v3/datasets/WIKI/"+company[i]+".json?api_key=Qj3hVb4abNZYbdEFxp27"
-        myResponse=requests.get(url)
-        if(myResponse.ok):
-            jData = json.loads(myResponse.content)
-            stock_price = jData["dataset"]["data"][0][1]
-            value_change = jData["dataset"]["data"][0][4]-jData["dataset"]["data"][0][1]
-            percentage_change=(value_change/stock_price)*100
-            name = jData["dataset"]["name"]
-            print "Current date and time is "+time.strftime("%c")+time.strftime(" %Z")
-            print "Company name is "+name
-            print "Company stock price is ",stock_price
-            print "Value change is ",value_change
-            print "Percentage change  is ",percentage_change,"%"
-            stockValues.name=name
-            stockValues.price = stock_price
-            stockValues.valuechange = value_change
-
-            stockValues.save()
-   
-    return render(request, "stockProfit/charts.html") 
-
-    
-
 def historyData (request):
-
-
     symList  = ["GOOG", "AAPL", "JCI", "ADBE", "NVDA",
                  "QCOM", "CI", "TWX", "TMUS", "EXPE",
                  "CTSH", "KORS", "DKS", "NKE", "TSLA",
                  "COST", "AMZN", "NFLX", "XOM", "FB",
                  "GIS", "INTC", "CSCO", "WMT", "BA"]
 
-    #symList = ["GOOG", "AAPL"]
     for j in range(len(symList)):
         company = symList[j]
         for i in range(5):
@@ -124,24 +46,9 @@ def historyData (request):
    
     return render(request, "stockProfit/historyData.html")
 
-def queryDB(request):
-    stock = StockValues.objects.filter(ticker__exact="GOOG").order_by('date')
-    priceList = list()
-    dateList = list()
-    print "Number of elemnets returned is: ", len(stock)
-    for i in range(len(stock)):
-        p = stock[i].price
-        d = stock[i].date.strftime('%m-%d-%Y')
-        print "Date: "+d+ ":: Stock GOOG had the value ", d
-        priceList.append(p)
-        dateList.append(d)
-
-    return render(request, "stockProfit/charts.html",{'priceList': priceList,'dateList': dateList})
-
 def ethicalStrategy(request):
     perctDist= [0.30, 0.25, 0.20, 0.15 , 0.10]
     amount1 = request.POST['amount']
-    #amount = 5000
     amount=float(amount1)
     stockList = ["GOOG", "AAPL", "JCI", "ADBE", "NVDA"]
 
@@ -233,9 +140,7 @@ def ethicalStrategy(request):
 
 def growthStrategy(request):
     perctDist= [0.20, 0.20, 0.20, 0.20 , 0.20]
-    #amount = request.POST['amount']
     amount1 = request.POST['amount']
-    #amount = 5000
     amount=float(amount1)
 
     stockList = ["CTSH", "KORS", "DKS", "NKE", "TSLA",]
@@ -256,7 +161,6 @@ def growthStrategy(request):
             p = stock[j].price
             d = stock[j].date.strftime('%m-%d-%Y')
             if i == 0:
-                #print "Date: "+d+ ":: Stock GOOG had the value ", d
                 priceList0.append(p)
                 dateList.append(d)
             elif i == 1:
@@ -329,7 +233,6 @@ def growthStrategy(request):
 def indexStrategy(request):
     perctDist= [0.30, 0.30, 0.20, 0.10 , 0.10]
     amount1 = request.POST['amount']
-    #amount = 5000
     amount=float(amount1)
 
     stockList = [ "COST", "AMZN", "NFLX", "XOM", "FB"]
@@ -350,7 +253,6 @@ def indexStrategy(request):
             p = stock[j].price
             d = stock[j].date.strftime('%m-%d-%Y')
             if i == 0:
-                #print "Date: "+d+ ":: Stock GOOG had the value ", d
                 priceList0.append(p)
                 dateList.append(d)
             elif i == 1:
@@ -423,7 +325,6 @@ def indexStrategy(request):
 def valueStrategy(request):
     perctDist= [0.20, 0.20, 0.20, 0.20 , 0.20]
     amount1 = request.POST['amount']
-    #amount = 5000
     amount=float(amount1)
 
     stockList = ["QCOM", "CI", "TWX", "TMUS", "EXPE"]
@@ -444,7 +345,6 @@ def valueStrategy(request):
             p = stock[j].price
             d = stock[j].date.strftime('%m-%d-%Y')
             if i == 0:
-                #print "Date: "+d+ ":: Stock GOOG had the value ", d
                 priceList0.append(p)
                 dateList.append(d)
             elif i == 1:
@@ -517,7 +417,6 @@ def valueStrategy(request):
 def qualityStrategy(request):
     perctDist= [0.30, 0.30, 0.20, 0.10 , 0.10]
     amount1 = request.POST['amount']
-    #amount = 5000
     amount=float(amount1)
 
     stockList = [ "GIS", "INTC", "CSCO", "WMT", "BA"]
@@ -538,7 +437,6 @@ def qualityStrategy(request):
             p = stock[j].price
             d = stock[j].date.strftime('%m-%d-%Y')
             if i == 0:
-                #print "Date: "+d+ ":: Stock GOOG had the value ", d
                 priceList0.append(p)
                 dateList.append(d)
             elif i == 1:
@@ -609,23 +507,6 @@ def qualityStrategy(request):
         'perctDist': perctDist})
 
 
-def displayCurrVal(request):
-
-    stockList = "GOOG"
-    shareBought = 10
-
-    currVal0 = list()
-    ticker = stockList
-    stock = LiveDataValue.objects(symbol=ticker).order_by('-date')
-    print "Is this ready"
-
-    for j in range(5):
-        p = stock[j].price
-        currVal0.append(p)
-
-    print currVal0
-    return render(request, "stockProfit/charts.html",{'priceList': currVal0})
-
 def getCurStockPrice(symbol):
     try:
         data = getQuotes(symbol)
@@ -649,6 +530,3 @@ def livePortFolio(request):
     curPortfolioVal.append(portfolioVal)
 
     return render(request, "stockProfit/livePortFolio.html",{'currValPF':curPortfolioVal})
-
-
-
